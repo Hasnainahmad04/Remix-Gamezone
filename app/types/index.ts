@@ -8,6 +8,7 @@ export interface Game {
   ratings: Rating[];
   genres: Genres[];
   short_screenshots: PreviewScreenShot[];
+  esrb_rating: esrbRating;
   tags: Tag[];
 }
 
@@ -27,12 +28,18 @@ interface Genres {
   id: number;
   name: string;
   slug: string;
-  game_count: number;
+  games_count: number;
   image_background: string;
 }
 
 interface Tag extends Genres {
   language: string;
+}
+
+interface esrbRating {
+  id: number;
+  name: string;
+  slug: string;
 }
 
 export interface GameResponse {
