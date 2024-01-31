@@ -1,4 +1,3 @@
-import { game } from "~/routes/data";
 import React from "react";
 import ImageSlider from "~/components/ImageSlider";
 import { Game } from "~/types";

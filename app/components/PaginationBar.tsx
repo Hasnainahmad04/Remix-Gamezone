@@ -4,7 +4,7 @@ import {
   MdOutlineKeyboardDoubleArrowRight,
 } from "react-icons/md";
 import React from "react";
-import { Link, useSearchParams } from "@remix-run/react";
+import { Link } from "@remix-run/react";
 import useGamePagination from "~/hooks/useGamePagination";
 
 interface Props {

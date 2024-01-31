@@ -8,11 +8,24 @@ import {
   ScrollRestoration,
 } from "@remix-run/react";
 import styles from "./app.css";
-import React from "react";
+import React, { ReactNode } from "react";
 
 export const links: LinksFunction = () => [{ rel: "stylesheet", href: styles }];
 
 export default function App() {
+  return (
+    <Document>
+      <main className={"flex w-full h-screen"}>
+        <aside className={"bg-[#151515] w-[15%] h-screen"}></aside>
+        <section className={"w-[85%] px-10  overflow-y-scroll"}>
+          <Outlet />
+        </section>
+      </main>
+    </Document>
+  );
+}
+
+const Document = ({ children }: ReactNode) => {
   return (
     <html lang="en">
       <head>
@@ -25,13 +38,8 @@ export default function App() {
         <ScrollRestoration />
         <Scripts />
         <LiveReload />
-        <main className={"flex w-full h-screen"}>
-          <aside className={"bg-[#151515] w-[15%] h-screen"}></aside>
-          <section className={"w-[85%] px-10  overflow-y-scroll"}>
-            <Outlet />
-          </section>
-        </main>
+        {children}
       </body>
     </html>
   );
-}
+};

@@ -2,17 +2,17 @@
 @tailwind components;
 @tailwind utilities;
 
-.slick-dots li button:before{
-    color: white !important;
+.slick-dots li button:before {
+  color: white !important;
 }
 
 .pagination_btn {
-    @apply w-[35px] h-[35px] rounded-md text-white border flex
+  @apply w-[35px] h-[35px] rounded-md text-white border flex
     justify-center items-center border-[#202020] transition
     duration-200 hover:bg-card-dark hover:shadow
-    disabled:cursor-not-allowed
+    disabled:cursor-not-allowed;
 }
 
 body {
-    @apply bg-[#151515] scroll-smoth
+  @apply bg-[#151515];
 }
