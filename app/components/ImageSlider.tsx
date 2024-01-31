@@ -25,14 +25,14 @@ const ImageSlider: React.FC<Props> = ({ images }) => {
     dotsClass: "slick-dots",
   };
   return (
-    <Slider {...settings}>
+    <Slider {...settings} className={"min-h-[200px]"}>
       {images.map(({ id, image }) => {
         return (
           <img
             alt={"Image"}
             key={id}
             src={image}
-            // className={"object-contain "}
+            className={"object-contain"}
           />
         );
       })}

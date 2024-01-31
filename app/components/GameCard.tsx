@@ -9,7 +9,11 @@ interface Props {
 
 const GameCard: React.FC<Props> = ({ game }) => {
   return (
-    <div className={"bg-card-dark rounded-md overflow-hidden shadow shadow-lg"}>
+    <div
+      className={
+        "bg-card-dark rounded-md overflow-hidden shadow shadow-lg min-h-[20rem]"
+      }
+    >
       <ImageSlider images={game.short_screenshots} />
       <div className={"mt-6 p-4 mb-4"}>
         <h2 className={"text-2xl text-white font-semibold"}>{game.name}</h2>

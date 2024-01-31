@@ -7,5 +7,12 @@
 }
 
 .pagination_btn {
-    @apply w-[35px] h-[35px] rounded-md text-neutral-600 border flex justify-center items-center border-[#dee2e6] hover:shadow
+    @apply w-[35px] h-[35px] rounded-md text-white border flex
+    justify-center items-center border-[#202020] transition
+    duration-200 hover:bg-card-dark hover:shadow
+    disabled:cursor-not-allowed
+}
+
+body {
+    @apply bg-[#151515] scroll-smoth
 }
