@@ -15,7 +15,9 @@ interface res {
 }
 const useGamePagination = ({ totalCount, pageSize = 20 }: params): res => {
   const [params] = useSearchParams();
-  const currentPage = Number(params.get("page"));
+  const genre = params.get("genres");
+  const search = params.get("search");
+  const currentPage = Number(params.get("page")) || 1;
   const totalPages = Math.ceil(totalCount / pageSize);
   const canGoBackward: boolean = currentPage !== 1;
   const canGoForward: boolean = currentPage < totalPages;
@@ -30,7 +32,11 @@ const useGamePagination = ({ totalCount, pageSize = 20 }: params): res => {
     pageNumbers.push(i);
   }
 
-  const goToPage = (page: string | number) => `/games?page=${page}`;
+  const goToPage = (page: string | number) => {
+    return `/games?page=${page}
+    ${genre ? `&genres=${genre}` : ""}
+    ${search ? `&search=${search}` : ""}`;
+  };
 
   return {
     currentPage,
