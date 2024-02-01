@@ -10,7 +10,7 @@ const GameCard: React.FC<Props> = ({ game }) => {
   return (
     <div
       className={
-        "bg-card-dark rounded-md overflow-hidden shadow shadow-lg min-h-[20rem]"
+        "bg-card-dark rounded-2xl overflow-hidden shadow shadow-lg min-h-[20rem]"
       }
     >
       <ImageSlider images={game.short_screenshots} />

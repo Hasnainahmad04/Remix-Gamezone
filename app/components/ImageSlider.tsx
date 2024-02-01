@@ -15,13 +15,10 @@ interface Props {
 const ImageSlider: React.FC<Props> = ({ images }) => {
   const settings = {
     dots: true,
-    fade: true,
     infinite: true,
     speed: 500,
     slidesToShow: 1,
     slidesToScroll: 1,
-    autoplay: true,
-    dotsClass: "slick-dots",
   };
   return (
     <Slider {...settings} className={"min-h-[200px]"}>

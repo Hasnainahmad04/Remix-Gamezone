@@ -21,6 +21,8 @@ const PaginationBar: React.FC<Props> = ({ totalCount, pageSize = 20 }) => {
     pages,
   } = useGamePagination({ totalCount });
 
+  if (!pages.length) return;
+
   return (
     <section className={"flex gap-1"}>
       <Link to={goToPage(1)}>
