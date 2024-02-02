@@ -7,13 +7,15 @@ export interface Game {
   rating: number;
   ratings: Rating[];
   genres: Genre[];
-  short_screenshots: PreviewScreenShot[];
+  short_screenshots?: PreviewScreenShot[];
   esrb_rating: esrbRating;
   tags: Tag[];
   added?: number;
+  description?: string;
+  platforms?: Platforms[];
 }
 
-type PreviewScreenShot = {
+export type PreviewScreenShot = {
   id: number;
   image: string;
 };
@@ -39,6 +41,16 @@ interface Tag extends Genre {
   language: string;
 }
 
+interface Platforms {
+  platform: {
+    id: number;
+    name: string;
+    slug: string;
+    image_background: string;
+    games_count: number;
+  };
+}
+
 interface esrbRating {
   id: number;
   name: string;
@@ -53,4 +65,9 @@ export interface GameResponse {
 export interface GenreResponse {
   count: number;
   results: Genre[];
+}
+
+export interface ScreenshotResponse {
+  count: number;
+  results: PreviewScreenShot[];
 }

@@ -53,3 +53,7 @@ body::-webkit-scrollbar-thumb {
 .nav-link {
   @apply block text-white text-2xl font-semibold my-3 duration-300 ease-in hover:text-[#737373]
 }
+
+.screenshot {
+  @apply w-[1000] h-[1000] rounded-md object-contain hover:cursor-zoom-in transition duration-300 transition-all hover:scale-90 delay-100
+}

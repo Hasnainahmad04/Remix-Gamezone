@@ -21,10 +21,10 @@ const PaginationBar: React.FC<Props> = ({ totalCount, pageSize = 20 }) => {
     pages,
   } = useGamePagination({ totalCount });
 
-  if (!pages.length) return;
+  // if (!pages.length) return;
 
   return (
-    <section className={"flex gap-1"}>
+    <section className={"flex gap-1 w-full overflow-x-scroll"}>
       <Link to={goToPage(1)}>
         <button className={"pagination_btn"} disabled={!canGoBackward}>
           <MdOutlineKeyboardDoubleArrowLeft />

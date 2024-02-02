@@ -6,6 +6,7 @@ export default {
     extend: {
       colors: {
         "card-dark": "#202020",
+        "primary-light": "#737373",
       },
     },
   },

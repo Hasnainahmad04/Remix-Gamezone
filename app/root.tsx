@@ -13,7 +13,7 @@ import {
 import styles from "./app.css";
 import React, { ReactNode } from "react";
 import { getGenresList } from "~/action/genres.action";
-import { GenreResponse } from "~/types";
+import { Genre, GenreResponse } from "~/types";
 import GenreList from "~/components/GenreList";
 
 interface LoaderData {
@@ -39,22 +39,8 @@ export default function App() {
   return (
     <Document>
       <main className={"flex w-full h-screen"}>
-        <aside
-          className={
-            "hidden lg:block bg-[#151515] w-[20%] px-6 overflow-y-scroll border-r border-r-[#2B271F] border-r-2"
-          }
-        >
-          <section className={"mt-10"}>
-            <Link to={"/games"}>
-              <span className={"nav-link"}>All Games</span>
-            </Link>
-            <Link to={"/genres"}>
-              <span className={"nav-link"}>Genres</span>
-            </Link>
-            <GenreList genres={genres.results} />
-          </section>
-        </aside>
-        <section className={"w-full lg:w-[80%] px-10 overflow-y-scroll"}>
+        <Sidebar genres={genres.results} />
+        <section className={"w-full lg:w-[85%] px-4 lg:px-8 overflow-y-scroll"}>
           <Outlet />
         </section>
       </main>
@@ -78,6 +64,29 @@ const Document = ({ children }: ReactNode) => {
         <LiveReload />
       </body>
     </html>
+  );
+};
+
+const Sidebar = ({ genres }: { genres: Genre[] }) => {
+  return (
+    <aside
+      className={
+        "hidden lg:block bg-[#151515] w-[15%] px-6 overflow-y-scroll border-r border-r-[#2B271F] border-r-2"
+      }
+    >
+      <nav>
+        {/*<span className={"block text-white text-3xl font-bold font-mono"}>*/}
+        {/*  GAME ZONE*/}
+        {/*</span>*/}
+        <Link to={"/games"}>
+          <span className={"nav-link"}>All Games</span>
+        </Link>
+        <Link to={"/genres"}>
+          <span className={"nav-link"}>Genres</span>
+        </Link>
+        {/*<GenreList genres={genres} />*/}
+      </nav>
+    </aside>
   );
 };
 

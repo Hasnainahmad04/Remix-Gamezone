@@ -7,11 +7,12 @@ import { json, MetaFunction } from "@remix-run/node";
 import {
   Form,
   useLoaderData,
+  useLocation,
   useNavigation,
   useSearchParams,
   useSubmit,
 } from "@remix-run/react";
-import { getGameList } from "~/action/games.action";
+import { getGameList, getGamesBySearchQuery } from "~/action/games.action";
 import { GameResponse, Genre } from "~/types";
 import GameCard from "~/components/GameCard";
 import PaginationBar from "~/components/PaginationBar";
@@ -19,10 +20,12 @@ import { IoIosSearch } from "react-icons/io";
 import debounce from "lodash.debounce";
 
 import { getGenreDetail } from "~/action/genres.action";
+import PageTitle from "~/components/PageTitle";
+import GameList from "~/components/GameList";
+import LoadingCards from "~/components/LoadingCard";
 
 interface LoaderData {
   games: Awaited<GameResponse>;
-  genre?: Genre;
 }
 
 export const links: LinksFunction = () => [
@@ -32,7 +35,7 @@ export const links: LinksFunction = () => [
 
 export const meta: MetaFunction = () => {
   return [
-    { title: "Games | Video Game Discovery Site" },
+    { title: "Games Zone | Video Game Discovery Site" },
     {
       name: "description",
       content:
@@ -43,36 +46,25 @@ export const meta: MetaFunction = () => {
 
 const Game: () => void = () => {
   const { games, genre } = useLoaderData() as LoaderData;
-
   const [searchParams] = useSearchParams();
-
-  const isGenre = searchParams.has("genres");
-  const query = searchParams.get("search");
+  const pathname = useLocation();
   const navigation = useNavigation();
+  const query = searchParams.get("search");
+
+  const isLoading = navigation.state === "loading";
 
   return (
     <>
       <SearchField query={query} />
-      <h1 className={"text-[2rem] lg:text-[4rem] text-white font-semibold"}>
-        {`${isGenre ? genre?.name : "All"} Games`}
-      </h1>
-
-      {navigation.state == "loading" ? (
-        <span className={"text-[#737373] text-xl"}>loading....</span>
+      <PageTitle title={"All Games"} />
+      {isLoading ? (
+        <LoadingCards size={40} />
       ) : (
-        <>
-          <div
-            className={"space-y-6 py-8 sm:columns-2 sm:gap-6 lg:columns-3 mb-8"}
-          >
-            {games?.results?.map((game) => (
-              <GameCard game={game} key={game.id} />
-            ))}
-          </div>
-          <div className={"my-10"}>
-            <PaginationBar totalCount={games.count} pageSize={20} />
-          </div>
-        </>
+        <GameList games={games.results} />
       )}
+      <div className={"my-10"}>
+        <PaginationBar totalCount={games.count} pageSize={20} />
+      </div>
     </>
   );
 };
@@ -80,14 +72,14 @@ const Game: () => void = () => {
 export const loader: LoaderFunction = async ({ request }) => {
   const url = new URL(request.url);
   const page = Number(url.searchParams.get("page")) || 1;
+  const searchQuery = url.searchParams.get("search");
 
-  const genre = url.searchParams.get("genres");
-  const search = url.searchParams.get("search");
-  const isGenre = url.searchParams.has("genres");
+  console.log({ searchQuery });
 
   return json<LoaderData>({
-    games: await getGameList(page, genre, search),
-    ...(isGenre ? { genre: await getGenreDetail(genre) } : {}),
+    games: !searchQuery
+      ? await getGameList(page)
+      : await getGamesBySearchQuery(searchQuery, page),
   });
 };
 

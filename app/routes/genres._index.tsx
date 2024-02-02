@@ -4,6 +4,7 @@ import { getGenresList } from "~/action/genres.action";
 import { GenreResponse } from "~/types";
 import { useLoaderData } from "@remix-run/react";
 import GenreCard from "~/components/GenreCard";
+import PageTitle from "~/components/PageTitle";
 
 interface LoaderRes {
   genres: Awaited<GenreResponse>;
@@ -23,11 +24,7 @@ const Page = () => {
   const { genres } = useLoaderData() as LoaderRes;
   return (
     <>
-      <h1
-        className={"text-[2rem] lg:text-[4rem] text-white font-semibold mt-6"}
-      >
-        Genres
-      </h1>
+      <PageTitle title={"Genres"} />
       <section className={"grid md:grid-cols-2 lg:grid-cols-3 gap-6"}>
         {genres?.results?.map((genre) => (
           <GenreCard genre={genre} key={genre.id} />
