@@ -25,11 +25,12 @@
 }
 
 body {
-  @apply bg-[#151515] scroll-smooth;
   --sb-track-color: #151515;
   --sb-thumb-color: #383838;
   --sb-size: 10px;
 
+  background-color: #151515;
+  scroll-behavior: smooth;
   scrollbar-color: var(--sb-thumb-color) var(--sb-track-color);
 }
 
@@ -48,8 +49,21 @@ body::-webkit-scrollbar-thumb {
 }
 
 .follow-btn {
-  @apply my-3 rounded-md w-[10rem] py-2 bg-white/10 duration-300 ease-in text-white hover:bg-white hover:text-black
+  @apply my-3 rounded-md w-[10rem] py-2 bg-white/10 duration-300 ease-in text-white hover:bg-white hover:text-black;
 }
 .nav-link {
-  @apply block text-white text-2xl font-semibold my-3 duration-300 ease-in hover:text-[#737373]
+  @apply block text-white text-2xl font-semibold my-3 duration-300 ease-in hover:text-[#737373];
+}
+
+.screenshot {
+  @apply w-full h-full rounded-md object-contain hover:cursor-zoom-in duration-300 transition-all hover:scale-90 delay-100;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
 }

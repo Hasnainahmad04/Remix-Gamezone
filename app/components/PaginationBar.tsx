@@ -1,17 +1,16 @@
+import { Link } from "@remix-run/react";
+import React from "react";
 import { IoIosArrowRoundBack, IoIosArrowRoundForward } from "react-icons/io";
 import {
   MdOutlineKeyboardDoubleArrowLeft,
   MdOutlineKeyboardDoubleArrowRight,
 } from "react-icons/md";
-import React from "react";
-import { Link } from "@remix-run/react";
 import useGamePagination from "~/hooks/useGamePagination";
 
 interface Props {
   totalCount: number;
-  pageSize?: number;
 }
-const PaginationBar: React.FC<Props> = ({ totalCount, pageSize = 20 }) => {
+const PaginationBar: React.FC<Props> = ({ totalCount }) => {
   const {
     currentPage,
     goToPage,
@@ -21,10 +20,8 @@ const PaginationBar: React.FC<Props> = ({ totalCount, pageSize = 20 }) => {
     pages,
   } = useGamePagination({ totalCount });
 
-  if (!pages.length) return;
-
   return (
-    <section className={"flex gap-1"}>
+    <section className={"flex gap-1 w-full overflow-x-scroll scrollbar-hide"}>
       <Link to={goToPage(1)}>
         <button className={"pagination_btn"} disabled={!canGoBackward}>
           <MdOutlineKeyboardDoubleArrowLeft />
@@ -39,7 +36,7 @@ const PaginationBar: React.FC<Props> = ({ totalCount, pageSize = 20 }) => {
       {pages.map((page) => {
         const isActive = currentPage === page;
         return (
-          <Link to={goToPage(page)} key={page}>
+          <Link to={goToPage(page)} key={page} preventScrollReset={false}>
             <button
               className={`px-3 py-1.5 rounded-md text-white ${
                 isActive ? "bg-card-dark" : null
