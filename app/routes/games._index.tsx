@@ -10,8 +10,8 @@ import {
 } from "@remix-run/react";
 
 // types
-import { GameResponse } from "~/types";
 import type { LoaderFunction } from "@remix-run/node";
+import { GameResponse } from "~/types";
 // Actions
 import {
   getGameList,
@@ -19,11 +19,11 @@ import {
   getNewAndUpcomingGames,
 } from "~/action/games.action";
 // components
-import PaginationBar from "~/components/PaginationBar";
+import { IoIosSearch } from "react-icons/io";
 import GameList from "~/components/GameList";
 import LoadingCards from "~/components/LoadingCard";
 import PageTitle from "~/components/PageTitle";
-import { IoIosSearch } from "react-icons/io";
+import PaginationBar from "~/components/PaginationBar";
 import TrendingGamesList from "~/components/TrendingGamesList";
 
 interface LoaderData {

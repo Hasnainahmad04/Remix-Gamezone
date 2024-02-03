@@ -1,30 +1,35 @@
-import { json, LoaderFunction } from "@remix-run/node";
-import { getGenreDetail } from "~/action/genres.action";
-import { GameResponse, Genre } from "~/types";
+import { defer, LoaderFunction } from "@remix-run/node";
+import { Await, useLoaderData } from "@remix-run/react";
+import { Suspense } from "react";
+// actions
 import { getGamesByGenres } from "~/action/games.action";
-import { useLoaderData, useNavigation } from "@remix-run/react";
+import { getGenreDetail } from "~/action/genres.action";
+// components
 import Banner from "~/components/Banner";
 import GameList from "~/components/GameList";
 import LoadingCards from "~/components/LoadingCard";
+// types
+import { GameResponse, Genre } from "~/types";
 
 interface LoaderData {
   genre: Awaited<Genre>;
-  games: Awaited<GameResponse>;
+  games: Promise<GameResponse | undefined>;
 }
 const Page = () => {
   const { genre, games } = useLoaderData() as LoaderData;
-  const navigation = useNavigation();
-  const isLoading = navigation.state === "loading";
 
   return (
     <>
       <Banner detail={genre} />
       <div className={"mt-6"}>
-        {isLoading ? (
-          <LoadingCards size={40} />
-        ) : (
-          <GameList games={games.results} />
-        )}
+        <Suspense fallback={<LoadingCards size={40} />}>
+          <Await
+            resolve={games}
+            errorElement={<p>Error while fetching games</p>}
+          >
+            {(games) => <GameList games={games?.results ?? []} />}
+          </Await>
+        </Suspense>
       </div>
     </>
   );
@@ -33,9 +38,9 @@ const Page = () => {
 export const loader: LoaderFunction = async ({ params }) => {
   if (!params?.slug) return;
 
-  return json<LoaderData>({
+  return defer({
+    games: getGamesByGenres(params.slug),
     genre: await getGenreDetail(params.slug),
-    games: await getGamesByGenres(params.slug),
   });
 };
 
