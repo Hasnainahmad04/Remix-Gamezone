@@ -1,30 +1,33 @@
 import * as process from "process";
-import {
-  Game,
-  GameResponse,
-  PreviewScreenShot,
-  ScreenshotResponse,
-} from "~/types";
+import { Game, GameResponse, ScreenshotResponse } from "~/types";
 
 const baseurl = process.env.BASE_URL;
 const apikey = process.env.API_KEY;
 const pageSize = 40;
 
+if (!apikey) throw Error("Provide Api key in env");
+
 const fetchGameData = async (
   endpoint: string,
   queryParams: Record<string, string | number>
-): Promise<GameResponse> => {
+): Promise<GameResponse | undefined> => {
   const url = new URL(`${baseurl}/${endpoint}`);
 
   Object.keys(queryParams).forEach((key) =>
     url.searchParams.append(key, String(queryParams[key]))
   );
 
-  const res = await fetch(url);
-  return await res.json();
+  try {
+    const res = await fetch(url);
+    return await res.json();
+  } catch (error) {
+    console.log({ error });
+  }
 };
 
-const getGameList = async (page?: number): Promise<GameResponse> => {
+const getGameList = async (
+  page?: number
+): Promise<GameResponse | undefined> => {
   return fetchGameData("games", {
     key: apikey,
     page: page || 1,
@@ -35,7 +38,7 @@ const getGameList = async (page?: number): Promise<GameResponse> => {
 const getGamesByGenres = async (
   genre: string,
   page?: number
-): Promise<GameResponse> => {
+): Promise<GameResponse | undefined> => {
   return fetchGameData("games", {
     key: apikey,
     page: page || 1,
@@ -47,7 +50,7 @@ const getGamesByGenres = async (
 const getGamesBySearchQuery = async (
   query: string,
   page?: number
-): Promise<GameResponse> => {
+): Promise<GameResponse | undefined> => {
   return fetchGameData("games", {
     key: apikey,
     page: page || 1,
@@ -56,17 +59,21 @@ const getGamesBySearchQuery = async (
   });
 };
 
-const getNewAndUpcomingGames = async (page?: number): Promise<GameResponse> => {
-  return fetchGameData("games", {
+const getNewAndUpcomingGames = async (
+  page?: number,
+  limit?: number
+): Promise<GameResponse | undefined> => {
+  return fetchGameData("games/lists/main", {
     key: apikey,
     page: page || 1,
-    page_size: pageSize,
+    page_size: limit || pageSize,
     ordering: "-released",
   });
 };
 
 const getGameDetail = async (slug: string): Promise<Game> => {
   const url = `${baseurl}/games/${slug}?key=${apikey}`;
+
   const res = await fetch(url);
   return await res.json();
 };

@@ -30,8 +30,8 @@ const GenreCard: React.FC<Props> = ({ genre }) => {
       </div>
 
       {genre.games?.slice(0, 3)?.map((game) => (
-        <div className={"w-full flex justify-between text-white"}>
-          <Link to={"/"}>
+        <div className={"w-full flex justify-between text-white"} key={game.id}>
+          <Link to={`/games/${game.slug}`}>
             <span className={"underline"}>{game?.name}</span>
           </Link>
           <span>{game?.added}</span>

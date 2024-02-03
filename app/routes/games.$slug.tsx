@@ -1,10 +1,17 @@
 import { json, LoaderFunction } from "@remix-run/node";
-import { getGameDetail, getGameScreenshots } from "~/action/games.action";
-import { Game, PreviewScreenShot } from "~/types";
 import { Link, useLoaderData } from "@remix-run/react";
-import Banner from "~/components/Banner";
-import PageTitle from "~/components/PageTitle";
+
+// types
+import { Game, PreviewScreenShot } from "~/types";
+
+// actions
+import { getGameDetail, getGameScreenshots } from "~/action/games.action";
+
+// components
 import Screenshots from "~/components/Screenshots";
+import Banner from "~/components/Banner";
+
+// helper
 import { formatDate } from "~/utils";
 
 interface LoaderData {
@@ -12,8 +19,6 @@ interface LoaderData {
   screenShots: Awaited<PreviewScreenShot[]>;
 }
 
-const image =
-  "https://media.rawg.io/media/screenshots/13c/13c20cdefc96ee8f1a2bbfdfecc9c546.jpg";
 const Page = () => {
   const { game, screenShots } = useLoaderData() as LoaderData;
   return (
@@ -29,14 +34,14 @@ const Page = () => {
         <h2 className={"text-white font-bold text-2xl"}>Details</h2>
 
         <div className={"flex gap-4 flex-wrap"}>
-          {game.platforms?.length && (
+          {game?.platforms?.length && (
             <div className={"flex gap-2 items-baseline"}>
               <span className={"text-primary-light"}>Platforms:</span>
               <ul className={"flex gap-1"}>
-                {game.platforms.map(({ platform }, index) => (
-                  <li className={"text-white text-sm"}>
+                {game?.platforms?.map(({ platform }, index) => (
+                  <li className={"text-white text-sm"} key={platform.id}>
                     {platform.name}
-                    {index == game.platforms?.length - 1 ? "." : ","}
+                    {index === game.platforms!.length - 1 ? "." : ","}
                   </li>
                 ))}
               </ul>
@@ -48,7 +53,7 @@ const Page = () => {
               <span className={"text-primary-light"}>Genre:</span>
               <ul className={"flex gap-1"}>
                 {game.genres.map((genre, index) => (
-                  <li className={"text-white underline text-sm"}>
+                  <li className={"text-white underline text-sm"} key={genre.id}>
                     <Link to={`/genres/${genre.slug}`}>
                       {genre.name}
                       {index == game.genres?.length - 1 ? "." : ","}
@@ -75,7 +80,7 @@ export const loader: LoaderFunction = async ({ params }) => {
   if (!params?.slug) return;
   const game = await getGameDetail(params.slug);
   const screenShots = await getGameScreenshots(params.slug);
-  return json<LoaderData>({ game, screenShots: screenShots.results });
+  return json<LoaderData>({ game, screenShots: screenShots?.results });
 };
 
 const GameDetail = ({ name, info }: { name: string; info: string }) => {

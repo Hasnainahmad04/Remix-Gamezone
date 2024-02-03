@@ -1,92 +1,105 @@
-import React, { FormEvent, useCallback, useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 
-import style from "slick-carousel/slick/slick.css";
-import theme from "slick-carousel/slick/slick-theme.css";
-import type { LinksFunction, LoaderFunction } from "@remix-run/node";
-import { json, MetaFunction } from "@remix-run/node";
+import { MetaFunction, defer } from "@remix-run/node";
 import {
+  Await,
   Form,
   useLoaderData,
-  useLocation,
-  useNavigation,
   useSearchParams,
   useSubmit,
 } from "@remix-run/react";
-import { getGameList, getGamesBySearchQuery } from "~/action/games.action";
-import { GameResponse, Genre } from "~/types";
-import GameCard from "~/components/GameCard";
-import PaginationBar from "~/components/PaginationBar";
-import { IoIosSearch } from "react-icons/io";
-import debounce from "lodash.debounce";
 
-import { getGenreDetail } from "~/action/genres.action";
-import PageTitle from "~/components/PageTitle";
+// types
+import { GameResponse } from "~/types";
+import type { LoaderFunction } from "@remix-run/node";
+// Actions
+import {
+  getGameList,
+  getGamesBySearchQuery,
+  getNewAndUpcomingGames,
+} from "~/action/games.action";
+// components
+import PaginationBar from "~/components/PaginationBar";
 import GameList from "~/components/GameList";
 import LoadingCards from "~/components/LoadingCard";
+import PageTitle from "~/components/PageTitle";
+import { IoIosSearch } from "react-icons/io";
+import TrendingGamesList from "~/components/TrendingGamesList";
 
 interface LoaderData {
-  games: Awaited<GameResponse>;
+  allGames: Promise<GameResponse | undefined>;
+  trendingGames: Awaited<GameResponse | undefined>;
 }
-
-export const links: LinksFunction = () => [
-  { rel: "stylesheet", href: style },
-  { rel: "stylesheet", href: theme },
-];
-
-export const meta: MetaFunction = () => {
-  return [
-    { title: "Games Zone | Video Game Discovery Site" },
-    {
-      name: "description",
-      content:
-        "List of Video Games ♛ Keep all games in one profile ✔ See what friends are playing, and find your next great game",
-    },
-  ];
-};
-
-const Game: () => void = () => {
-  const { games, genre } = useLoaderData() as LoaderData;
-  const [searchParams] = useSearchParams();
-  const pathname = useLocation();
-  const navigation = useNavigation();
-  const query = searchParams.get("search");
-
-  const isLoading = navigation.state === "loading";
-
-  return (
-    <>
-      <SearchField query={query} />
-      <PageTitle title={"All Games"} />
-      {isLoading ? (
-        <LoadingCards size={40} />
-      ) : (
-        <GameList games={games.results} />
-      )}
-      <div className={"my-10"}>
-        <PaginationBar totalCount={games.count} pageSize={20} />
-      </div>
-    </>
-  );
-};
 
 export const loader: LoaderFunction = async ({ request }) => {
   const url = new URL(request.url);
   const page = Number(url.searchParams.get("page")) || 1;
   const searchQuery = url.searchParams.get("search");
 
-  console.log({ searchQuery });
+  const allGames = !searchQuery
+    ? getGameList(page)
+    : getGamesBySearchQuery(searchQuery, page);
 
-  return json<LoaderData>({
-    games: !searchQuery
-      ? await getGameList(page)
-      : await getGamesBySearchQuery(searchQuery, page),
+  const trendingGames = await getNewAndUpcomingGames(1, 10);
+
+  return defer({
+    allGames,
+    trendingGames,
   });
+};
+
+export const meta: MetaFunction = () => {
+  return [
+    { title: "Games Zone | Video Game Discovery Site" },
+    {
+      name: "description",
+      content: "List of Video Games ♛ Keep all games in one profile",
+    },
+  ];
+};
+
+const Game: () => void = () => {
+  const { allGames, trendingGames } = useLoaderData() as LoaderData;
+  const [searchParams] = useSearchParams();
+  const query = searchParams.get("search");
+
+  return (
+    <>
+      <SearchField query={query} />
+      {trendingGames?.results?.length && !query && (
+        <section className="my-2">
+          <PageTitle title={"New and Upcoming Games"} />
+          <TrendingGamesList games={trendingGames.results} />
+        </section>
+      )}
+
+      <PageTitle title={query ? `Search Result for "${query}"` : "All Games"} />
+      <Suspense fallback={<LoadingCards size={40} />}>
+        <Await
+          resolve={allGames}
+          errorElement={<p>Error while fetching games</p>}
+        >
+          {(games) => (
+            <>
+              <GameList games={games?.results ?? []} />
+              {games?.count && (
+                <div className={"my-10"}>
+                  <PaginationBar totalCount={games?.count} />
+                </div>
+              )}
+            </>
+          )}
+        </Await>
+      </Suspense>
+    </>
+  );
 };
 
 export default Game;
 
-const SearchField = ({ query }: { query: string }) => {
+const SearchField = ({ query }: { query: string | null }) => {
   const [searchQuery, setSearchQuery] = useState("");
+
   const submit = useSubmit();
 
   useEffect(() => {
@@ -98,10 +111,7 @@ const SearchField = ({ query }: { query: string }) => {
       <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
         <IoIosSearch className={"text-[#737373] w-5 h-5"} />
       </div>
-      <Form
-        method={"get"}
-        onChange={(e) => debounce(submit(e.currentTarget), 500)}
-      >
+      <Form method={"get"} onChange={(e) => submit(e.currentTarget)}>
         <input
           defaultValue={searchQuery}
           placeholder={"Search Games"}
