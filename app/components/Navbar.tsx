@@ -1,5 +1,4 @@
 import { NavLink, useLocation } from "@remix-run/react";
-import React from "react";
 import { routes } from "~/utils/route";
 
 const Navbar = () => {

@@ -21,7 +21,7 @@ const GameCard: React.FC<Props> = ({ game }) => {
       />
       <div className={"p-4 mb-3"}>
         <div className={"flex justify-between gap-2"}>
-          <Link to={`/games/${game.slug}`}>
+          <Link to={`/game/${game.slug}`}>
             <span
               className={
                 "text-md text-white font-[500] hover:border-b pb-1 text-pretty"
@@ -47,7 +47,7 @@ const GameCard: React.FC<Props> = ({ game }) => {
                   key={genre.id}
                   className={"text-white underline px-2 text-xs first:pl-0"}
                 >
-                  <Link to={`/genres/${genre.slug}`}>{genre.name}</Link>
+                  <Link to={`/genre/${genre.slug}`}>{genre.name}</Link>
                 </li>
               );
             })}

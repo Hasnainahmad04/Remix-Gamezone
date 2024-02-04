@@ -28,10 +28,10 @@ export const meta: MetaFunction = () => {
 export default function App() {
   return (
     <Document>
-      <main className={"flex w-full flex-col lg:flex-row h-screen "}>
+      <main className={"flex w-full flex-col lg:flex-row h-screen"}>
         <Navbar />
         <section
-          className={"w-full flex-1 px-4 lg:px-8 overflow-y-scroll scrollbar"}
+          className={"w-full flex-1 px-4 lg:px-8 scrollbar overflow-y-scroll"}
         >
           <Outlet />
         </section>
@@ -62,6 +62,7 @@ const Document = ({ children }: { children: ReactNode }) => {
 export function ErrorBoundary() {
   const error = useRouteError();
   console.error(error);
+
   return (
     <html lang="en">
       <head>
@@ -72,7 +73,7 @@ export function ErrorBoundary() {
       <body>
         <main className="w-full h-screen flex bg-[#151515] justify-center items-center">
           <h1 className="text-5xl text-white font-bold">
-            Something Went Wrong
+            {error?.status === 404 ? "Page Not Found" : "Something Went Wrong"}
           </h1>
         </main>
         <Scripts />

@@ -1,8 +1,8 @@
-import { Game, Genre } from "~/types";
+import { Game, Entity } from "~/types";
 import React, { useState } from "react";
 
 interface Props {
-  detail: Genre | Game;
+  detail: Entity | Game;
 }
 const Banner: React.FC<Props> = ({ detail }) => {
   const background =
@@ -19,9 +19,11 @@ const Banner: React.FC<Props> = ({ detail }) => {
         backgroundImage: `linear-gradient(rgba(32, 32, 32, 0.3), rgb(32, 32, 32) 80%), url(${background})`,
       }}
     >
-      <div className={"w-full p-4 h-auto"}>
-        <h2 className={"text-white text-[3rem] font-bold"}>{detail.name}</h2>
-        <Description description={detail.description ?? ""} />
+      <div className={"w-full p-4 h-auto backdrop-blur-sm"}>
+        <h2 className={"text-white text-[5rem] font-bold"}>{detail.name}</h2>
+        {detail?.description && (
+          <Description description={detail.description} />
+        )}
       </div>
     </div>
   );

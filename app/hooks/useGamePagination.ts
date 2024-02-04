@@ -2,7 +2,7 @@ import { useSearchParams } from "@remix-run/react";
 
 interface params {
   totalCount: number;
-  pageSize?: number;
+  pageSize: number;
 }
 
 interface res {
@@ -13,7 +13,7 @@ interface res {
   canGoForward: boolean;
   pages: number[];
 }
-const useGamePagination = ({ totalCount, pageSize = 40 }: params): res => {
+const useGamePagination = ({ totalCount, pageSize }: params): res => {
   const [params] = useSearchParams();
   const search = params.get("search");
   const currentPage = Number(params.get("page")) || 1;
@@ -32,7 +32,7 @@ const useGamePagination = ({ totalCount, pageSize = 40 }: params): res => {
   }
 
   const goToPage = (page: string | number) => {
-    return `/games?page=${page}${search ? `&search=${search}` : ""}`;
+    return `?page=${page}${search ? `&search=${search}` : ""}`;
   };
 
   return {

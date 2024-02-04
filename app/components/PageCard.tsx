@@ -1,21 +1,22 @@
-import { Genre } from "~/types";
+import { Entity } from "~/types";
 import React from "react";
 import { Link } from "@remix-run/react";
 
 interface Props {
-  genre: Genre;
+  data: Entity;
+  route: string;
 }
-const GenreCard: React.FC<Props> = ({ genre }) => {
+const PageCard: React.FC<Props> = ({ data, route }) => {
   return (
     <div
       style={{
-        backgroundImage: `linear-gradient(rgba(32, 32, 32, 0.5), rgb(32, 32, 32) 70%), url(${genre.image_background})`,
+        backgroundImage: `linear-gradient(rgba(32, 32, 32, 0.5), rgb(32, 32, 32) 70%), url(${data.image_background})`,
       }}
-      className={`w-[100%] rounded-xl px-8 py-12 flex flex-col items-center bg-no-repeat bg-center bg-cover`}
+      className={`w-full rounded-xl px-8 py-12 flex flex-col items-center bg-no-repeat bg-center bg-cover`}
     >
-      <Link to={`/genres/${genre.slug}`}>
+      <Link to={`/${route}/${data.slug}`}>
         <span className={"text-2xl underline text-white font-semibold"}>
-          {genre?.name}
+          {data?.name}
         </span>
       </Link>
 
@@ -26,12 +27,12 @@ const GenreCard: React.FC<Props> = ({ genre }) => {
         }
       >
         <span className={"font-semibold"}>Popular Items:</span>
-        <span>{genre?.games_count}</span>
+        <span>{data?.games_count}</span>
       </div>
 
-      {genre.games?.slice(0, 3)?.map((game) => (
+      {data.games?.slice(0, 3)?.map((game) => (
         <div className={"w-full flex justify-between text-white"} key={game.id}>
-          <Link to={`/games/${game.slug}`}>
+          <Link to={`/game/${game.slug}`}>
             <span className={"underline"}>{game?.name}</span>
           </Link>
           <span>{game?.added}</span>
@@ -40,4 +41,4 @@ const GenreCard: React.FC<Props> = ({ genre }) => {
     </div>
   );
 };
-export default GenreCard;
+export default PageCard;

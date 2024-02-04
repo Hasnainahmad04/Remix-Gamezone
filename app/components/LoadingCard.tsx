@@ -7,12 +7,14 @@ interface Props {
 const LoadingCards: React.FC<Props> = ({ size = 20 }) => {
   const emptyArr = Array.from({ length: size }, () => Math.random());
   return (
-    <div className={"grid md:grid-cols-2 lg:grid-cols-4 gap-3"}>
+    <div
+      className={"mt-6 grid md:grid-cols-2 lg:grid-cols-4 gap-3 items-center"}
+    >
       {emptyArr.map((el) => {
         return (
           <div
             className={
-              "bg-card-dark rounded-lg overflow-hidden w-full h-full max-w-sm shadow shadow-lg h-[20rem] animate-pulse"
+              "bg-card-dark rounded-lg overflow-hidden w-full max-w-sm  shadow-lg h-[20rem] animate-pulse"
             }
             key={el}
           >

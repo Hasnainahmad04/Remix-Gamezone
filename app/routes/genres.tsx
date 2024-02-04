@@ -1,13 +1,13 @@
-import React from "react";
 import { json, LoaderFunction, MetaFunction } from "@remix-run/node";
-import { getGenresList } from "~/action/genres.action";
-import { GenreResponse } from "~/types";
 import { useLoaderData } from "@remix-run/react";
-import GenreCard from "~/components/GenreCard";
+import { getGenresList } from "~/action/genres.action";
+import PageCard from "~/components/PageCard";
+import PageListContainer from "~/components/PageListContainer";
 import PageTitle from "~/components/PageTitle";
+import { EntityResponse } from "~/types";
 
 interface LoaderRes {
-  genres: Awaited<GenreResponse>;
+  genres: Awaited<EntityResponse>;
 }
 
 export const meta: MetaFunction = () => {
@@ -25,11 +25,12 @@ const Page = () => {
   return (
     <>
       <PageTitle title={"Genres"} />
-      <section className={"grid md:grid-cols-2 lg:grid-cols-3 gap-6"}>
+
+      <PageListContainer>
         {genres?.results?.map((genre) => (
-          <GenreCard genre={genre} key={genre.id} />
+          <PageCard data={genre} key={genre.id} route="genre" />
         ))}
-      </section>
+      </PageListContainer>
     </>
   );
 };
