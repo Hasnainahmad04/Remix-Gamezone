@@ -1,19 +1,34 @@
 import * as process from "process";
-import { Genre, GenreResponse } from "~/types";
+import { Entity, EntityResponse, GameResponse } from "~/types";
+import { fetchGameData } from "./games.action";
 
 const baseurl = process.env.BASE_URL;
 const apikey = process.env.API_KEY;
 
-const getGenresList = async (pageSize?: number): Promise<GenreResponse> => {
+if (!apikey) throw Error("Missing api key");
+
+const getGenresList = async (pageSize?: number): Promise<EntityResponse> => {
   const res = await fetch(
     `${baseurl}/genres?key=${apikey}&page_size=${pageSize || 20}`
   );
   return await res.json();
 };
 
-const getGenreDetail = async (slug: string): Promise<Genre> => {
+const getGenreDetail = async (slug: string): Promise<Entity> => {
   const res = await fetch(`${baseurl}/genres/${slug}?key=${apikey}`);
   return await res.json();
 };
 
-export { getGenresList, getGenreDetail };
+const getGamesByGenres = async (
+  genre: string,
+  page?: number
+): Promise<GameResponse | undefined> => {
+  return fetchGameData("games", {
+    key: apikey,
+    page: page || 1,
+    page_size: 40,
+    genres: genre,
+  });
+};
+
+export { getGenresList, getGenreDetail, getGamesByGenres };

@@ -6,10 +6,10 @@ export interface Game {
   background_image: string;
   rating: number;
   ratings: Rating[];
-  genres: Genre[];
+  genres: Entity[];
   short_screenshots?: PreviewScreenShot[];
   esrb_rating: esrbRating;
-  tags: Tag[];
+  tags: Entity[];
   added?: number;
   description?: string;
   platforms?: Platforms[];
@@ -27,7 +27,7 @@ interface Rating {
   percent: number;
 }
 
-export interface Genre {
+export interface Entity {
   id: number;
   name: string;
   slug: string;
@@ -35,10 +35,7 @@ export interface Genre {
   image_background: string;
   games?: Pick<Game, "id" | "name" | "slug" | "added">[];
   description?: string;
-}
-
-interface Tag extends Genre {
-  language: string;
+  language?: string;
 }
 
 interface Platforms {
@@ -62,9 +59,9 @@ export interface GameResponse {
   results: Game[];
 }
 
-export interface GenreResponse {
+export interface EntityResponse {
   count: number;
-  results: Genre[];
+  results: Entity[];
 }
 
 export interface ScreenshotResponse {

@@ -35,18 +35,6 @@ const getGameList = async (
   });
 };
 
-const getGamesByGenres = async (
-  genre: string,
-  page?: number
-): Promise<GameResponse | undefined> => {
-  return fetchGameData("games", {
-    key: apikey,
-    page: page || 1,
-    page_size: pageSize,
-    genres: genre,
-  });
-};
-
 const getGamesBySearchQuery = async (
   query: string,
   page?: number
@@ -73,9 +61,14 @@ const getNewAndUpcomingGames = async (
 
 const getGameDetail = async (slug: string): Promise<Game> => {
   const url = `${baseurl}/games/${slug}?key=${apikey}`;
-
   const res = await fetch(url);
   return await res.json();
+};
+
+const getGameSeries = async ({ slug }: { slug: string }) => {
+  return fetchGameData(`games/${slug}/game-series`, {
+    key: apikey,
+  });
 };
 
 const getGameScreenshots = async (
@@ -89,8 +82,9 @@ const getGameScreenshots = async (
 export {
   getGameList,
   getNewAndUpcomingGames,
-  getGamesByGenres,
   getGamesBySearchQuery,
   getGameDetail,
   getGameScreenshots,
+  fetchGameData,
+  getGameSeries,
 };

@@ -9,8 +9,9 @@ import useGamePagination from "~/hooks/useGamePagination";
 
 interface Props {
   totalCount: number;
+  pageSize?: number;
 }
-const PaginationBar: React.FC<Props> = ({ totalCount }) => {
+const PaginationBar: React.FC<Props> = ({ totalCount, pageSize = 40 }) => {
   const {
     currentPage,
     goToPage,
@@ -18,10 +19,12 @@ const PaginationBar: React.FC<Props> = ({ totalCount }) => {
     canGoBackward,
     canGoForward,
     pages,
-  } = useGamePagination({ totalCount });
+  } = useGamePagination({ totalCount, pageSize });
 
   return (
-    <section className={"flex gap-1 w-full overflow-x-scroll scrollbar-hide"}>
+    <section
+      className={"flex gap-1 w-full overflow-x-scroll scrollbar-hide my-4"}
+    >
       <Link to={goToPage(1)}>
         <button className={"pagination_btn"} disabled={!canGoBackward}>
           <MdOutlineKeyboardDoubleArrowLeft />

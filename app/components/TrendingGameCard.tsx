@@ -12,7 +12,7 @@ const TrendingGameCard = ({ details }: { details: Game }) => {
       />
       <div className="absolute backdrop-blur-md bottom-0 w-full flex p-3 gap-x-3 justify-between items-center">
         <Link
-          to={`/games/${details.slug}`}
+          to={`/game/${details.slug}`}
           className="capitalize text-white text-sm underline-offset-1 font-medium"
         >
           {details.name}
