@@ -20,7 +20,9 @@ const Banner: React.FC<Props> = ({ detail }) => {
       }}
     >
       <div className={"w-full p-4 h-auto backdrop-blur-sm"}>
-        <h2 className={"text-white text-[5rem] font-bold"}>{detail.name}</h2>
+        <h2 className={"text-white text-[3rem] lg:text-[4rem] font-bold"}>
+          {detail.name}
+        </h2>
         {detail?.description && (
           <Description description={detail.description} />
         )}
