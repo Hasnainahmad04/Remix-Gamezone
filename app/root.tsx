@@ -28,11 +28,13 @@ export const meta: MetaFunction = () => {
 export default function App() {
   return (
     <Document>
-      <main className={"flex w-full flex-col lg:flex-row h-screen"}>
+      <main
+        className={
+          "relative flex flex-auto w-full flex-col lg:flex-row h-screen"
+        }
+      >
         <Navbar />
-        <section
-          className={"w-full flex-1 px-4 lg:px-8 scrollbar overflow-y-scroll"}
-        >
+        <section className={"px-4 flex-1 lg:px-8 scrollbar overflow-y-scroll"}>
           <Outlet />
         </section>
       </main>

@@ -8,15 +8,19 @@ const apikey = process.env.API_KEY;
 if (!apikey) throw Error("Missing api key");
 
 const getGenresList = async (pageSize?: number): Promise<EntityResponse> => {
-  const res = await fetch(
-    `${baseurl}/genres?key=${apikey}&page_size=${pageSize || 20}`
-  );
-  return await res.json();
+  try {
+    const res = await fetch(
+      `${baseurl}/genres?key=${apikey}&page_size=${pageSize || 20}`
+    );
+    return await res.json();
+  } catch (e) {}
 };
 
 const getGenreDetail = async (slug: string): Promise<Entity> => {
-  const res = await fetch(`${baseurl}/genres/${slug}?key=${apikey}`);
-  return await res.json();
+  try {
+    const res = await fetch(`${baseurl}/genres/${slug}?key=${apikey}`);
+    return await res.json();
+  } catch (e) {}
 };
 
 const getGamesByGenres = async (
