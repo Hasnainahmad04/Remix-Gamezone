@@ -10,7 +10,7 @@ if (!apikey) throw Error("Missing api key");
 const getTagList = async (
   page: number,
   pageSize?: number
-): Promise<EntityResponse> => {
+): Promise<EntityResponse | undefined> => {
   try {
     const res = await fetch(
       `${baseurl}/tags?key=${apikey}&page_size=${pageSize || 20}&page=${
@@ -18,14 +18,18 @@ const getTagList = async (
       }`
     );
     return await res.json();
-  } catch (e) {}
+  } catch (e) {
+    console.log(e);
+  }
 };
 
-const getTagDetails = async (slug: string): Promise<Entity> => {
+const getTagDetails = async (slug: string): Promise<Entity | undefined> => {
   try {
     const res = await fetch(`${baseurl}/tags/${slug}?key=${apikey}`);
     return await res.json();
-  } catch (e) {}
+  } catch (e) {
+    console.log(e);
+  }
 };
 
 const getGamesByTags = async ({

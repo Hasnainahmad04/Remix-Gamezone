@@ -62,6 +62,8 @@ export interface GameResponse {
 export interface EntityResponse {
   count: number;
   results: Entity[];
+  previous: string | null;
+  next: string | null;
 }
 
 export interface ScreenshotResponse {

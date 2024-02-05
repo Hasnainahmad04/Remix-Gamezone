@@ -12,7 +12,7 @@ const PageCard: React.FC<Props> = ({ data, route }) => {
       style={{
         backgroundImage: `url(${data.image_background})`,
       }}
-      className={`relative overflow-hidden w-full rounded-md bg-no-repeat bg-center bg-cover`}
+      className={`relative overflow-hidden bg-card-dark w-full rounded-md bg-no-repeat bg-center bg-cover`}
     >
       <div className="p-8 h-48 backdrop-brightness-50 hover:backdrop-brightness-75 duration-300 ease-out transition-all">
         <Link to={`/${route}/${data.slug}`}>
