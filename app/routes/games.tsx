@@ -4,6 +4,7 @@ import { MetaFunction, defer } from "@remix-run/node";
 import {
   Await,
   Form,
+  useFetcher,
   useLoaderData,
   useSearchParams,
   useSubmit,
@@ -11,7 +12,7 @@ import {
 
 // types
 import type { LoaderFunction } from "@remix-run/node";
-import { GameResponse } from "~/types";
+import { Game as GameInterface } from "~/types";
 // Actions
 import {
   getGameList,
@@ -20,16 +21,11 @@ import {
 } from "~/action/games.action";
 // components
 import { IoIosSearch } from "react-icons/io";
+import { useInView } from "react-intersection-observer";
 import GameList from "~/components/GameList";
 import LoadingCards from "~/components/LoadingCard";
 import PageTitle from "~/components/PageTitle";
-import PaginationBar from "~/components/PaginationBar";
 import TrendingGamesList from "~/components/TrendingGamesList";
-
-interface LoaderData {
-  allGames: Promise<GameResponse | undefined>;
-  trendingGames: Awaited<GameResponse | undefined>;
-}
 
 export const loader: LoaderFunction = async ({ request }) => {
   const url = new URL(request.url);
@@ -59,9 +55,31 @@ export const meta: MetaFunction = () => {
 };
 
 const Game: () => void = () => {
-  const { allGames, trendingGames } = useLoaderData() as LoaderData;
+  const { allGames: initialGames, trendingGames } =
+    useLoaderData<typeof loader>();
+  const fetcher = useFetcher<typeof loader>();
+  const { ref, inView } = useInView();
   const [searchParams] = useSearchParams();
+
+  const [games, setGames] = useState<GameInterface[]>([]);
+  const [nextPage, setNextPage] = useState(2);
+  const [hasMore, setHasMore] = useState(true);
+  const isLoading = fetcher.state == "loading";
   const query = searchParams.get("search");
+
+  useEffect(() => {
+    if (!isLoading && inView && hasMore) {
+      fetcher.load(`?page=${nextPage}${query ? `search=${query}` : ""}`);
+      setNextPage((page) => page + 1);
+    }
+  }, [inView]);
+
+  useEffect(() => {
+    if (fetcher.state == "idle" && fetcher.data?.allGames) {
+      setGames((prev) => [...prev, ...fetcher.data.allGames.results]);
+      !fetcher.data.allGames.next && setHasMore(false);
+    }
+  }, [fetcher.data, fetcher.state]);
 
   return (
     <>
@@ -76,19 +94,24 @@ const Game: () => void = () => {
       <PageTitle title={query ? `Search Result for "${query}"` : "All Games"} />
       <Suspense fallback={<LoadingCards size={40} />}>
         <Await
-          resolve={allGames}
+          resolve={initialGames}
           errorElement={<p>Error while fetching games</p>}
         >
-          {(games) => (
-            <>
-              <GameList games={games?.results ?? []} />
-              {games?.count && (
-                <div className={"my-10"}>
-                  <PaginationBar totalCount={games?.count} />
+          {(initialGames) =>
+            initialGames?.results && (
+              <>
+                <GameList games={[...initialGames.results, ...games]} />
+
+                <div ref={ref} className="flex w-full my-6 justify-center">
+                  {isLoading && inView && (
+                    <span className="px-8 py-4 rounded-lg bg-card-dark text-white">
+                      Loading...
+                    </span>
+                  )}
                 </div>
-              )}
-            </>
-          )}
+              </>
+            )
+          }
         </Await>
       </Suspense>
     </>
