@@ -28,9 +28,9 @@ import PageTitle from "~/components/PageTitle";
 import TrendingGamesList from "~/components/TrendingGamesList";
 
 export const loader: LoaderFunction = async ({ request }) => {
-  const url = new URL(request.url);
-  const page = Number(url.searchParams.get("page")) || 1;
-  const searchQuery = url.searchParams.get("search");
+  const { searchParams } = new URL(request.url);
+  const page = Number(searchParams.get("page")) || 1;
+  const searchQuery = searchParams.get("search");
 
   const allGames = !searchQuery
     ? getGameList(page)
@@ -68,8 +68,9 @@ const Game: () => void = () => {
   const query = searchParams.get("search");
 
   useEffect(() => {
-    if (!isLoading && inView && hasMore) {
-      fetcher.load(`?page=${nextPage}${query ? `search=${query}` : ""}`);
+    // if it is not already fetching Games, it has more games and it is not a search result then fetch
+    if (!isLoading && inView && hasMore && !query) {
+      fetcher.load(`?page=${nextPage}`);
       setNextPage((page) => page + 1);
     }
   }, [inView]);
@@ -102,13 +103,15 @@ const Game: () => void = () => {
               <>
                 <GameList games={[...initialGames.results, ...games]} />
 
-                <div ref={ref} className="flex w-full my-6 justify-center">
-                  {isLoading && inView && (
-                    <span className="px-8 py-4 rounded-lg bg-card-dark text-white">
-                      Loading...
-                    </span>
-                  )}
-                </div>
+                {!query && (
+                  <div ref={ref} className="flex w-full my-6 justify-center">
+                    {isLoading && inView && (
+                      <span className="px-8 py-4 rounded-lg bg-card-dark text-white">
+                        Loading...
+                      </span>
+                    )}
+                  </div>
+                )}
               </>
             )
           }
